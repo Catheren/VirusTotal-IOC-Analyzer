@@ -1,0 +1,95 @@
+import re
+import requests
+import json
+import pandas as pd
+from dotenv import load_dotenv
+import os
+
+
+load_dotenv()  # Loads variables from .env
+API_KEY = os.getenv("API_KEY")
+
+
+def query_vt(ioc, ioc_type):
+    base_url = 'https://www.virustotal.com/api/v3/'
+    headers = {
+        'x-apikey': API_KEY
+    }
+
+    if ioc_type == 'ip':
+        endpoint = f'ip_addresses/{ioc}'
+    elif ioc_type == 'domain':
+        endpoint = f'domains/{ioc}'
+    elif ioc_type == 'hash':
+        endpoint = f'files/{ioc}'
+    else:
+        print("Unknown IOC type")
+        return None
+
+    url = base_url + endpoint
+    response = requests.get(url, headers=headers)
+    if response.status_code == 200:
+        return response.json()["data"]
+        
+    else:
+        print(f'Error {response.status_code}: {response.text}')
+        return None
+    
+def classify_ioc(line):
+    
+
+        if ip_pattern.match(line):
+            return "ip"
+        elif domain_pattern.match(line):
+            return "domain"
+        elif md5_pattern.match(line) or sha1_pattern.match(line) or sha256_pattern.match(line):
+            return "hash"
+        else: 
+            return None
+    
+    
+def extract_info(data):
+    if not data: 
+        return None
+    return {
+        "id": data.get("id"),
+        "type": data.get("type"),
+        "harmless_vote":  data.get("attributes", {}).get("total_votes", {}).get("harmless"),
+        "malicious_vote": data.get("attributes", {}).get("total_votes", {}).get("malicious")
+        }
+
+ip_pattern = re.compile(r'^(\d{1,3}\.){3}\d{1,3}$')
+domain_pattern = re.compile(r'^(?!\-)([A-Za-z0-9\-]{1,63}(?<!\-)\.)+[A-Za-z]{2,6}$')
+md5_pattern =  re.compile(r'^[a-fA-F0-9]{32}$')
+sha1_pattern = re.compile(r'^[a-fA-F0-9]{40}$')
+sha256_pattern = re.compile(r'^[a-fA-F0-9]{64}$')
+with open('inputs\\iocs.txt', 'r') as file:
+    master = []
+    for line in file:
+        line = line.strip()
+        ioc_type = classify_ioc(line)
+        response_vt = query_vt(line, ioc_type)
+        summary = extract_info(response_vt)
+        master.append(summary)
+
+
+#print(json.dumps(master, indent=2))
+df = pd.DataFrame(master)
+
+#calculate the votes
+df["total_votes"] = df["harmless_vote"] + df["malicious_vote"]
+df["malicious_vote_pct"] = df["malicious_vote"] / df["total_votes"]
+
+
+def apply_labels(x):
+    if x == 0:
+        return "unknown"
+    elif x > 0.3:
+        return "malicious"
+    else:
+        return 'non-malicious'
+
+    
+df['verdict'] = df["malicious_vote_pct"].apply(apply_labels)
+
+df.to_csv('outputs/output.csv')
