@@ -2,8 +2,8 @@
 # VirusTotal-IOC-Analyzer
 
 
-This Python script analyzes IOCs (Indicators of Compromise) such as **IP addresses**, **domains**, and **file hashes** by querying the [VirusTotal](https://www.virustotal.com/) API. It classifies each IOC based on the community’s vote and exports the results to a structured CSV
-## 📌 Features
+This Python script analyzes IOCs (Indicators of Compromise) such as **IP addresses**, **domains**, and **file hashes** by querying the [VirusTotal](https://www.virustotal.com/) API. It classifies each IOC based on the community’s vote and exports the results to a structured CSV. This project uses libraries such as re, requests, json, pandas, dotenv, and os.
+## 📌 Featuresre, 
  ✅ Automatically detects IOC type (IP, domain, or hash)
 - ✅ Queries the VirusTotal API for threat intelligence
 - ✅ Calculates malicious vote percentage
