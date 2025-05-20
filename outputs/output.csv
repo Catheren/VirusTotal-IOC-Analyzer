@@ -1,0 +1,14 @@
+,id,type,harmless_vote,malicious_vote,total_votes,malicious_vote_pct,verdict
+0,89.248.167.131,ip_address,0,11,11,1.0,malicious
+1,185.220.100.241,ip_address,0,12,12,1.0,malicious
+2,162.247.74.200,ip_address,0,6,6,1.0,malicious
+3,45.134.20.97,ip_address,0,0,0,,non-malicious
+4,185.100.87.202,ip_address,0,4,4,1.0,malicious
+5,freesoftupload.com,domain,0,0,0,,non-malicious
+6,mynewsofts.info,domain,0,0,0,,non-malicious
+7,getadware.com,domain,0,0,0,,non-malicious
+8,fastplay.pro,domain,0,0,0,,non-malicious
+9,instadownloader.org,domain,0,0,0,,non-malicious
+10,275a021bbfb6489e54d471899f7db9d1663fc695ec2fe2a2c4538aabf651fd0f,file,2186,387,2573,0.150408083948698,non-malicious
+11,6ca13d52ca70c883e0f0bb101e425a89e8624de51db2d2392593af6a84118090,file,0,0,0,,non-malicious
+12,5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8,file,1,0,1,0.0,unknown
